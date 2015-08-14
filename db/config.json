@@ -1,0 +1,11 @@
+{
+    "production": {
+        "url": "mongodb://localhost/chat-room"
+    },
+    "test": {
+        "url": "mongodb://localhost/chat-room-test"
+    },
+    "development": {
+        "url": "mongodb://localhost/chat-room-dev"
+    }
+}
