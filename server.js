@@ -48,8 +48,27 @@ app.use('*', function(req, res) {
 
 // // Share session with io sockets
 // io.use(sharedsession(session));
- 
-     
+var connectedList=[]
+Array.prototype.unique = function() {
+    var o = {}, i, l = this.length, r = [];
+    for(i=0; i<l;i+=1) o[this[i]] = this[i];
+    for(i in o) r.push(o[i]);
+    return r;
+};
+Array.prototype.remove = function() {
+    var what, a = arguments, L = a.length, ax;
+    while (L && this.length) {
+        what = a[--L];
+        while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1);
+        }
+    }
+    return this;
+};
+
+// var ary = ['three', 'seven', 'eleven'];
+
+// ary.remove('seven');    
 
 io.on('connection', function (socket) {
    // console.log(client.request.headers.cookie);
@@ -62,13 +81,37 @@ io.on('connection', function (socket) {
   //socket.auth = false;
     //socket.on('authentication', function(data) {
         
-   // console.log(data);
+    var userEncrypted3 = socket.request.headers.authorization.split(' ')[1];
+    var userDecrypt3 = Buffer(userEncrypted3+"=", 'base64').toString('ascii');
+    console.log(userDecrypt3);
+    var user3 = userDecrypt3.split(':');
+    var userName3 = user3[0];
+    var userPwd3 = user3[1];
+    var connectedUsers = function(user){
+        connectedList.push(user);
+        return connectedList.unique();
+    }
+    var disconnectUsers = function(user){
+        var cncArr = connectedList.unique();
+         cncArr.remove(user);
+         console.log(cncArr);
+         return cncArr;
+    }
+     socket.broadcast.emit('connectedUser',connectedUsers(userName3));
+     
      Post.list(function(posts){
          socket.emit('connection', posts); },
             function(err){
               console.log(err);  
             }
         );
+        
+     socket.on('disconnect', function () {
+      console.log(userName3);
+      socket.broadcast.emit('connectedUser',disconnectUsers(userName3));
+      //online = online - 1;
+     });
+     
     socket.on('typing', function(boolean) {
         var userEncrypted = socket.request.headers.authorization.split(' ')[1];
         var userDecrypt = Buffer(userEncrypted+"=", 'base64').toString('ascii');
@@ -146,4 +189,4 @@ server.listen(8080);
 //     console.log('Listening on port 8080');
 // });
 
-// exports.app = app;
+// exports.app = app; 

@@ -49,6 +49,14 @@ $(document).ready(function() {
            }
         });
     }
+    var loadUser = function(users){
+         console.log(users);
+        $('#connected p span').remove();
+        users.forEach(function(user){
+            $('#connected p').append('<span>'+' '+user+'</span>')
+        });
+    }
     socket.on('connection',loadMessage);
-    
+    //socket.emit('connectedUser',function(){return;})//TODO added code
+    socket.on('connectedUser',loadUser); 
 });
