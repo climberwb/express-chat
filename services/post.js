@@ -14,6 +14,20 @@ exports.save = function(message,user, callback, errback) {
     });
 };
 
+exports.delete = function(postId,callback,errback){
+   Post.find({ _id: postId },function(err,docs){
+    docs[0].remove();  //Remove all the documents that match!
+      if (err) {
+            console.log(err);
+            errback(err);
+            return;
+        }
+       // console.log(posts);
+       //TODO update user posts with this code User.findOneAndUpdate({_id: docs.user['_id']},,)
+        callback(docs);
+});
+}
+
 exports.list = function(callback, errback) {
     console.log('inside list');
     Post.find(function(err, posts) {

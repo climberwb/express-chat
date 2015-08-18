@@ -97,10 +97,10 @@ io.on('connection', function (socket) {
          console.log(cncArr);
          return cncArr;
     }
-     socket.broadcast.emit('connectedUser',connectedUsers(userName3));
+     io.emit('connectedUser',connectedUsers(userName3));
      
      Post.list(function(posts){
-         socket.emit('connection', posts); },
+         socket.emit('connection', posts, userName3); },
             function(err){
               console.log(err);  
             }
@@ -112,6 +112,14 @@ io.on('connection', function (socket) {
       //online = online - 1;
      });
      
+    socket.on('delete',function(post_id){
+        Post.delete(post_id,function(post){console.log(post)
+            io.emit('delete',post_id);
+        },function(err){console.log(err)});
+        //TODO socket.broadcast.emit
+        
+    });
+    
     socket.on('typing', function(boolean) {
         var userEncrypted = socket.request.headers.authorization.split(' ')[1];
         var userDecrypt = Buffer(userEncrypted+"=", 'base64').toString('ascii');
@@ -122,16 +130,7 @@ io.on('connection', function (socket) {
         socket.broadcast.emit('typing', userName);
     });
     socket.on('message', function(message) {
-        //  unirest.post('https://chat-room-climberwb.c9.io/posts')
-        //  .header('Accept', 'application/json')
-        //  .send({ "message": message }) //TODO why is send not sending any information??
-        //   .end(function(response) {
-        //       console.log('inside the response');
-        //         console.log(response.body);
-        //       });
-      //  var userEncrypt = socket.request.headers.authorization.split(' ')[1].split(':');
-     // console.log(Buffer(socket.request.headers.authorization+"=", 'base64').toString('ascii'));
-      //console.log(socket.request.headers.authorization.split(' ')[1]);
+       
         var userEncrypted2 = socket.request.headers.authorization.split(' ')[1];
         var userDecrypt2 = Buffer(userEncrypted2+"=", 'base64').toString('ascii');
         console.log(userDecrypt2);
@@ -140,12 +139,16 @@ io.on('connection', function (socket) {
         var userPwd2 = user2[1];
         User.findUser(userName2, function(myUser){ // THIS LINE HAS THE ERR
         //console.log(userObject);
-            
-            
-            Post.save(message,myUser,function(posts){
-                User.update(myUser,posts);
-                
-                socket.broadcast.emit('message', userName2+': '+message);
+
+            Post.save(message,myUser,function(post){
+                User.update(myUser,post);
+              //  if(post['_user'].username == userName2){
+                    socket.broadcast.emit('message', message,post,userName2,false);
+                    socket.emit('message', message,post,userName2,true);
+                //}
+                //else{
+                   // socket.emit('message', message,post,userName2,false);
+                //}
             },
                 function(err){
                    console.log(err);  

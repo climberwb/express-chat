@@ -1,24 +1,28 @@
 <!doctype html>
-<title>Chatroom</title>
-<meta charset="utf-8">
-
-
-<script src="//code.jquery.com/jquery-2.1.0.js"></script>
-<script src="/socket.io/socket.io.js"></script>
-<script src="main.js"></script> 
-
-
-
-<input type="text">
-<div id="connected">
-        <p><strong>Connected Users:</strong></p>
-</div>
-<div id="typing">
-        <ul>
-        </ul>
-</div>
-<div id="messages"></div>
-
+<html>
+        <title>Chatroom</title>
+        <meta charset="utf-8">
+        <head>
+                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+                <link rel="stylesheet" href="main.css">
+                <script src="//code.jquery.com/jquery-2.1.0.js"></script>
+                <script src="/socket.io/socket.io.js"></script>
+                <script src="main.js"></script> 
+                
+        </head>
+        
+        <body>
+                <input type="text">
+                <div id="connected">
+                        <p><strong>Connected Users:</strong></p>
+                </div>
+                <div id="typing">
+                        <ul>
+                        </ul>
+                </div>
+                <div id="messages"></div>
+        </body>
+</html>
 <!-- BELOW IS TEST CODE !!!!!!-->
 <!--<html>-->
 <!--    <head>-->
